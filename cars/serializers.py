@@ -36,15 +36,16 @@ class CarsSerializer(serializers.ModelSerializer):
         model = Cars
         fields = ['id_car', 'brand', 'model', 'color', 'brand_id', 'model_id', 'color_id','license_plate', 'year']
 
-    def validators(self, attrs):
+    def validate(self, attrs):
         return attrs
+
 
     def create(self, validated_data):
         car = Cars.objects.create(
-            brand = validated_data['brand'],
-            model = validated_data['model'],
-            color = validated_data['color'],
-            license_plate = validated_data['license_plate'],
-            year = validated_data['year']
+            brand_id=validated_data['brand_id'].id_brand,
+            model_id=validated_data['model_id'].id_model,
+            color_id=validated_data['color_id'].id_color,
+            license_plate=validated_data['license_plate'],
+            year=validated_data['year']
         )
         return car
