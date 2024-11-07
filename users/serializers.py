@@ -11,7 +11,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email','first_name', 'last_name','date_of_birth'
+        fields = ('id', 'email','first_name', 'last_name','date_of_birth',
                   'password', 'password_confirm')
 
     def validate(self, attrs):
@@ -24,7 +24,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
         id = User.objects.filter(id=attrs.get('id')).exists()
         email = User.objects.filter(email=attrs.get('email')).exists()
-        username = User.objects.filter(username=attrs.get('username')).exists()
 
         return attrs
 

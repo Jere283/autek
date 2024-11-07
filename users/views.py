@@ -38,9 +38,7 @@ class profile(GenericAPIView):
         data = {
             'id': user.id,
             'email': user.email,
-            'username': user.email,
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'profile_img': user.profile_img
         }
         return Response(data, status=status.HTTP_200_OK)
