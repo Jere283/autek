@@ -31,8 +31,15 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ 'https://autek.onrender.com',
-                  'autek.onrender.com']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'localhost:8000',
+    '127.0.0.1:8000',
+    'autek.onrender.com',
+    'https://autek.onrender.com',
+    'http://127.0.0.1:8000',
+]
 
 
 # Application definition
