@@ -26,9 +26,9 @@ class AppointmentStatus(models.Model):
 
 class Appointments(models.Model):
     id_appointment = models.AutoField(primary_key=True)
-    id_user = models.ForeignKey(User, models.DO_NOTHING, db_column='id_user', blank=True, null=True)
-    id_car = models.ForeignKey(Car, models.DO_NOTHING, db_column='id_car', blank=True, null=True)
-    id_workshops = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='id_workshops', blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, db_column='id_user', blank=True, null=True)
+    car = models.ForeignKey(Car, models.DO_NOTHING, db_column='id_car', blank=True, null=True)
+    workshops = models.ForeignKey(Workshop, models.DO_NOTHING, db_column='id_workshops', blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     date = models.DateTimeField()
     appointment_status = models.ForeignKey(AppointmentStatus, models.DO_NOTHING, db_column='appointment_status', blank=True, null=True)

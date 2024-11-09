@@ -18,8 +18,8 @@ class AppointmentStatusAdmin(admin.ModelAdmin):
 
 @admin.register(Appointments)
 class AppointmentsAdmin(admin.ModelAdmin):
-    list_display = ('id_appointment', 'id_user', 'id_car', 'id_workshops', 'date', 'appointment_status')
-    search_fields = ('id_user__username', 'id_car__license_plate')
+    list_display = ('id_appointment', 'user', 'car', 'workshops', 'date', 'appointment_status')
+    search_fields = ('user__username', 'car__license_plate')
     list_filter = ('appointment_status', 'date')
     ordering = ('date',)
 
