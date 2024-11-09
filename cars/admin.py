@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import CarModels, Cars, Colors, CarBrands
+from .models import CarModel, Car, Color, CarBrand
 
 # Register your models here.
 
-admin.site.register(Cars)
-admin.site.register(Colors)
-admin.site.register(CarBrands)
-admin.site.register(CarModels)
+admin.site.register(Car)
+admin.site.register(Color)
+admin.site.register(CarBrand)
+admin.site.register(CarModel)
