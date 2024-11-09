@@ -21,9 +21,6 @@ class CarModel(models.Model):
         db_table = 'car_models'
 
 
-
-
-
 class Color(models.Model):
     id_color = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=60)

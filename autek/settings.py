@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'cars',
-    'services'
+    'services',
+    'workshops'
 
 ]
 
