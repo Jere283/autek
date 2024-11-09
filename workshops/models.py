@@ -27,6 +27,7 @@ class City(models.Model):
 
     class Meta:
         managed = False
+        db_table = 'cities'
 
 
 class Address(models.Model):
