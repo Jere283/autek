@@ -29,7 +29,21 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class WorkshopSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
+    address_id =serializers.PrimaryKeyRelatedField(queryset=address.objects.all(), write_only=True)
 
     class Meta:
         model = Workshop
-        fields = ['id_workshop', 'name', 'phone_number', 'email', 'address']
+        fields = ['id_workshop', 'name', 'phone_number', 'email', 'address','address_id']
+
+    def validate(self, attrs):
+        return attrs
+
+    def create(self, validated_data):
+        workshop = Workshop.object.create(
+            name = validated_data['name'],
+            phone_number = validated_data['phone_number'],
+            email = validated_data['email'],
+            address_id = validated_data['adress_id'].id_adress
+        )
+
+        return workshop
