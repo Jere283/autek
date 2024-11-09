@@ -44,7 +44,6 @@ class CarsSerializer(serializers.ModelSerializer):
         fields = ['id_car', 'brand', 'model', 'color', 'brand_id', 'model_id', 'color_id','license_plate', 'year', 'user']
 
     def validate(self, attrs):
-        print("User:", self.context['request'].user)
         return attrs
 
 
