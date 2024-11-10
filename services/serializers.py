@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, viewsets
 
 from cars.models import Car
 from cars.serializers import CarsSerializer
@@ -21,24 +21,51 @@ class AppointmentStatusSerializer(serializers.ModelSerializer):
         fields = ['id_appointment_status', 'name']
 
 
+
 class AppointmentsSerializer(serializers.ModelSerializer):
     id_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
-    id_car= serializers.PrimaryKeyRelatedField(queryset=Car.objects.all(), write_only=True)
+    id_car = serializers.PrimaryKeyRelatedField(queryset=Car.objects.all(), write_only=True)
     id_workshop = serializers.PrimaryKeyRelatedField(queryset=Workshop.objects.all(), write_only=True)
 
-    appointment_status = AppointmentStatusSerializer(read_only=True)
-
-    user = UserRegisterSerializer(read_only=True)
-    car = CarsSerializer(read_only=True)
-    workshops = WorkshopSerializer(read_only=True)
+    # Use SerializerMethodField for detailed fields
+    user = serializers.SerializerMethodField()
+    car = serializers.SerializerMethodField()
+    workshops = serializers.SerializerMethodField()
+    appointment_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Appointments
-        fields = ['id_appointment',  'user', 'car', 'workshops','id_user', 'id_car', 'id_workshop', 'description',
-                  'date', 'appointment_status']
+        fields = ['id_appointment', 'user', 'car', 'workshops', 'id_user', 'id_car', 'id_workshop',
+                  'description', 'date', 'appointment_status']
 
-    def validate(self, attrs):
-        return attrs
+    def get_user(self, obj):
+        return {
+            "id": obj.user.id,
+            "first_name": obj.user.first_name,
+            "email": obj.user.email
+        }
+
+    def get_car(self, obj):
+        return {
+            "id": obj.car.id_car,
+            "brand": obj.car.brand.name,
+            "model": obj.car.model.name,
+            "license_plate": obj.car.license_plate
+        }
+
+    def get_workshops(self, obj):
+        return {
+            "id": obj.workshops.id_workshop,
+            "name": obj.workshops.name,
+        }
+
+    def get_appointment_status(self, obj):
+        if obj.appointment_status:
+            return {
+                "id": obj.appointment_status.id_appointment_status,
+                "name": obj.appointment_status.name
+            }
+        return None
 
     def create(self, validated_data):
         appointment = Appointments.objects.create(
@@ -47,9 +74,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
             workshops=validated_data["id_workshop"],
             description=validated_data["description"],
             date=validated_data["date"],
-
         )
-
         return appointment
 
 
@@ -61,6 +86,10 @@ class WorkshopsServiceSerializer(serializers.ModelSerializer):
         model = WorkshopsService
         fields = ['id_workshop_service', 'workshop', 'service', 'price']
 
+
+class AppointmentViewSet(viewsets.ModelViewSet):
+    queryset = Appointments.objects.select_related('user', 'car', 'workshops', 'appointment_status').all()
+    serializer_class = AppointmentsSerializer
 
 class AppointmentsServicesSerializer(serializers.ModelSerializer):
     appointment = AppointmentsSerializer(read_only=True)
