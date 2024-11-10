@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    "debug_toolbar",
     'users',
     'cars',
     'services',
@@ -68,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'autek.urls'
@@ -174,3 +176,17 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+def show_toolbar(request):           # <-- NEW
+    return True                      # <-- NEW
+
+DEBUG_TOOLBAR_CONFIG = {                     # <-- NEW
+    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,  # <-- NEW
+}                                            # <-- NEW
+
+if DEBUG:                                                      # <-- NEW
+    import mimetypes                                           # <-- NEW
+    mimetypes.add_type("application/javascript", ".js", True)  # <-- NEW

@@ -38,11 +38,11 @@ class GetAllAppointmentsView(GenericAPIView):
 
     def get(self, request):
         try:
-            # Use select_related to optimize fetching related objects (user, car, workshop)
+
             queryset = Appointments.objects.select_related(
-                'user',  # join with user table
-                'car',  # join with car table
-                'workshops'  # join with workshops table
+                'user',
+                'car',
+                'workshops'
             ).all()
 
             serializer = self.serializer_class(queryset, many=True)
