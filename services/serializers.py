@@ -23,7 +23,6 @@ class AppointmentStatusSerializer(serializers.ModelSerializer):
 
 
 class AppointmentsSerializer(serializers.ModelSerializer):
-    id_user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
     id_car = serializers.PrimaryKeyRelatedField(queryset=Car.objects.all(), write_only=True)
     id_workshop = serializers.PrimaryKeyRelatedField(queryset=Workshop.objects.all(), write_only=True)
 
@@ -35,7 +34,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointments
-        fields = ['id_appointment', 'user', 'car', 'workshops', 'id_user', 'id_car', 'id_workshop',
+        fields = ['id_appointment', 'user', 'car', 'workshops', 'id_car', 'id_workshop',
                   'description', 'date', 'appointment_status']
 
     def get_user(self, obj):
@@ -68,8 +67,9 @@ class AppointmentsSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
+        user = self.context['request'].user
         appointment = Appointments.objects.create(
-            user=validated_data["id_user"],
+            user=user,
             car=validated_data["id_car"],
             workshops=validated_data["id_workshop"],
             description=validated_data["description"],
@@ -86,10 +86,6 @@ class WorkshopsServiceSerializer(serializers.ModelSerializer):
         model = WorkshopsService
         fields = ['id_workshop_service', 'workshop', 'service', 'price']
 
-
-class AppointmentViewSet(viewsets.ModelViewSet):
-    queryset = Appointments.objects.select_related('user', 'car', 'workshops', 'appointment_status').all()
-    serializer_class = AppointmentsSerializer
 
 class AppointmentsServicesSerializer(serializers.ModelSerializer):
     appointment = AppointmentsSerializer(read_only=True)

@@ -16,7 +16,6 @@ class CreateAppointmentView(GenericAPIView):
 
 
     def post(self, request):
-        print(request.data)
         serializer = self.serializer_class(
             data=request.data,
             context={'request': request}
