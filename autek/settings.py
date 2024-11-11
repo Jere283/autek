@@ -150,6 +150,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'https://frontent-autek.vercel.app'
+]
+
 
 AUTH_USER_MODEL = 'users.User'
 
