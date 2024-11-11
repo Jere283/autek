@@ -180,13 +180,13 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-def show_toolbar(request):           # <-- NEW
-    return True                      # <-- NEW
+def show_toolbar(request):
+    return True
 
-DEBUG_TOOLBAR_CONFIG = {                     # <-- NEW
-    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,  # <-- NEW
-}                                            # <-- NEW
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+}
 
-if DEBUG:                                                      # <-- NEW
-    import mimetypes                                           # <-- NEW
-    mimetypes.add_type("application/javascript", ".js", True)  # <-- NEW
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type("application/javascript", ".js", True)

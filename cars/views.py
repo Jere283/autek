@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from cars.models import Car
 from cars.serializers import CarsSerializer
+from users.models import User
 
 
 class GetAllCarsView(GenericAPIView):
@@ -43,4 +44,34 @@ class CreateCarsView(GenericAPIView):
             return Response(data={"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             print("User:", request.user)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class GetUserCarsView(GenericAPIView):
+    serializer_class = CarsSerializer
+    permission_classes = [IsAuthenticated]
+    def get(self, request, user_id=None ):
+        try:
+            if user_id != None:
+                user = get_object_or_404(User, id=user_id)
+                queryset = Car.objects.select_related(
+                    'brand',
+                    'model',
+                    'color',
+                    'user'
+                ).filter(user=user)
+
+            else:
+                queryset = Car.objects.select_related(
+                    'brand',
+                    'model',
+                    'color',
+                    'user'
+                ).filter(user=request.user)
+
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
