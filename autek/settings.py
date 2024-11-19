@@ -36,9 +36,12 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost:8000',
     '127.0.0.1:8000',
+    'localhost:3000',
+    '127.0.0.1:3000',
     'autek.onrender.com',
     'https://autek.onrender.com',
     'http://127.0.0.1:8000',
+    'http://127.0.0.1:3000',
 ]
 
 
