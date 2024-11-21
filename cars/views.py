@@ -3,18 +3,63 @@ from rest_framework.generics import GenericAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from cars.models import Car
-from cars.serializers import CarsSerializer
+from cars.models import Car, Color, CarBrand, CarModel
+from cars.serializers import CarsSerializer, CarBrandsSerializer, CarColorsSerializer, CarModelsSerializer
 from users.models import User
 
 
 class GetAllCarsView(GenericAPIView):
 
     serializer_class = CarsSerializer
+    permission_classes = [IsAuthenticated]
 
     def get (self, request):
         try:
             queryset = Car.objects.all()
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class GetAllCarsColors(GenericAPIView):
+
+    serializer_class = CarColorsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get (self, request):
+        try:
+            queryset = Color.objects.all()
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetAllCarsBrands(GenericAPIView):
+
+    serializer_class = CarBrandsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get (self, request):
+        try:
+            queryset = CarBrand.objects.all()
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetAllCarsModels(GenericAPIView):
+
+    serializer_class = CarModelsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get (self, request, brand_id):
+        try:
+            queryset = CarModel.objects.filter(brand=brand_id)
             serializer = self.serializer_class(queryset, many=True)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
