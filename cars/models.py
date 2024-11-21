@@ -15,6 +15,8 @@ class CarBrand(models.Model):
 class CarModel(models.Model):
     id_model = models.AutoField(primary_key=True)
     name = models.CharField(unique=True, max_length=80)
+    brand = models.ForeignKey(CarBrand, models.DO_NOTHING)
+
 
     class Meta:
         managed = False
