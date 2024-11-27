@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/v1/users/', include('users.urls')),
     path('api/v1/cars/', include('cars.urls')),
     path('api/v1/service/', include('services.urls')),
+    path('api/v1/workshop/', include('workshops.urls')),
     path('__debug__/', include(debug_toolbar.urls)),
 ]

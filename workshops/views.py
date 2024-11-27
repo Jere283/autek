@@ -1,3 +1,26 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-# Create your views here.
+from workshops.models import Workshop
+from workshops.serializers import WorkshopSerializer
+
+
+class GetWorkshopsView(GenericAPIView):
+    serializer_class = WorkshopSerializer
+    permission_classes = [IsAuthenticated]
+    def get(self, request, workshop_id=None ):
+        try:
+            if workshop_id != None:
+                queryset = Workshop.objects.filter(id_workshop=workshop_id)
+
+            else:
+                queryset = Workshop.objects.all()
+
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
