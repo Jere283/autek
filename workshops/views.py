@@ -24,3 +24,20 @@ class GetWorkshopsView(GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetWorkshopsByIdView(GenericAPIView):
+    serializer_class = WorkshopSerializer
+    permission_classes = [IsAuthenticated]
+    def get(self, request, workshop_id=None ):
+        try:
+            queryset = get_object_or_404(Workshop,id_workshop=workshop_id)
+
+
+            serializer = self.serializer_class(queryset)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
