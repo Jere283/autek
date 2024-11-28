@@ -46,6 +46,7 @@ class Workshop(models.Model):
     phone_number = models.CharField(max_length=10)
     email = models.CharField(unique=True, max_length=120)
     address = models.ForeignKey(Address, models.DO_NOTHING, blank=True, null=True)
+    rating = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

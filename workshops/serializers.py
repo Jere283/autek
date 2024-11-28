@@ -38,7 +38,7 @@ class WorkshopSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Workshop
-        fields = ['id_workshop', 'name', 'phone_number', 'email', 'address', 'address_id']
+        fields = ['id_workshop', 'name', 'phone_number', 'email', 'address', 'address_id', 'rating']
 
     def validate(self, attrs):
         return attrs
