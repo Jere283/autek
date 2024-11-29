@@ -4,8 +4,9 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from autek.permissions import IsAdmin
 from services.models import Appointments, AppointmentStatus
-from services.serializers import AppointmentsSerializer, AppointmentStatusSerializer
+from services.serializers import AppointmentsSerializer, AppointmentStatusSerializer, AppointmentStatusPatchSerializer
 from users.models import User
 
 
@@ -91,3 +92,19 @@ class GetUserAppointmentsView(GenericAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class AppointmentStatusUpdateView(GenericAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin ]
+
+    def patch(self, request, appointment_id):
+        try:
+            appointment = Appointments.objects.get(pk=appointment_id)
+        except Appointments.DoesNotExist:
+            return Response({"error": "Appointment not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = AppointmentStatusPatchSerializer(appointment, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Appointment status updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

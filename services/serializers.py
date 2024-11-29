@@ -79,6 +79,26 @@ class AppointmentsSerializer(serializers.ModelSerializer):
         return appointment
 
 
+class AppointmentStatusPatchSerializer(serializers.ModelSerializer):
+
+    appointment_status = serializers.PrimaryKeyRelatedField(queryset=AppointmentStatus.objects.all(), write_only=True)
+    appointment_status_name = serializers.CharField(source='appointment_status.name', read_only=True)
+
+    def validate(self, data):
+        current_status = self.instance.appointment_status
+        new_status = data.get('appointment_status')
+
+        if current_status == new_status:
+            raise serializers.ValidationError("The new status must be different from the current status.")
+
+        return data
+
+
+    class Meta:
+        model = Appointments
+        fields = ['appointment_status', 'appointment_status_name']
+
+
 class WorkshopsServiceSerializer(serializers.ModelSerializer):
     workshop = serializers.StringRelatedField()
     service = ServiceSerializer(read_only=True)
@@ -91,6 +111,7 @@ class WorkshopsServiceSerializer(serializers.ModelSerializer):
 class AppointmentsServicesSerializer(serializers.ModelSerializer):
     appointment = AppointmentsSerializer(read_only=True)
     service = WorkshopsServiceSerializer(read_only=True)
+
 
     class Meta:
         model = AppointmentsServices
