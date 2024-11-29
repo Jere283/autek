@@ -4,8 +4,8 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from services.models import Appointments
-from services.serializers import AppointmentsSerializer
+from services.models import Appointments, AppointmentStatus
+from services.serializers import AppointmentsSerializer, AppointmentStatusSerializer
 from users.models import User
 
 
@@ -51,6 +51,19 @@ class GetAllAppointmentsView(GenericAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+#TODO: Admin Role Only
+class GetAllAppointmentsStatusView(GenericAPIView):
+    serializer_class = AppointmentStatusSerializer
+    def get(self, request):
+        try:
+            queryset = AppointmentStatus.objects.all()
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 #TODO: limit the user ID serach only to admins when implementing roles
 class GetUserAppointmentsView(GenericAPIView):
     serializer_class = AppointmentsSerializer
@@ -77,3 +90,4 @@ class GetUserAppointmentsView(GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+

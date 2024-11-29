@@ -26,11 +26,10 @@ class AppointmentsSerializer(serializers.ModelSerializer):
     id_car = serializers.PrimaryKeyRelatedField(queryset=Car.objects.all(), write_only=True)
     id_workshop = serializers.PrimaryKeyRelatedField(queryset=Workshop.objects.all(), write_only=True)
 
-    # Use SerializerMethodField for detailed fields
-    user = serializers.SerializerMethodField()
-    car = serializers.SerializerMethodField()
-    workshops = serializers.SerializerMethodField()
-    appointment_status = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField(read_only=True)
+    car = serializers.SerializerMethodField(read_only=True)
+    workshops = serializers.SerializerMethodField(read_only=True)
+    appointment_status = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Appointments
@@ -67,12 +66,14 @@ class AppointmentsSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
+        solicitud_enviada_status = AppointmentStatus.objects.get(name="Solicitud enviada")
         user = self.context['request'].user
         appointment = Appointments.objects.create(
             user=user,
             car=validated_data["id_car"],
             workshops=validated_data["id_workshop"],
             description=validated_data["description"],
+            appointment_status=solicitud_enviada_status,
             date=validated_data["date"],
         )
         return appointment
