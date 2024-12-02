@@ -39,12 +39,13 @@ class GetAllAppointmentsView(GenericAPIView):
 
     def get(self, request):
         try:
+            status_name = request.query_params.get('status')
 
-            queryset = Appointments.objects.select_related(
-                'user',
-                'car',
-                'workshops'
-            ).all()
+
+            queryset = Appointments.objects.select_related('user', 'car', 'workshops', 'appointment_status')
+
+            if status_name:
+                queryset = queryset.filter(appointment_status__name=status_name)
 
             serializer = self.serializer_class(queryset, many=True)
 
