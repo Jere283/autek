@@ -52,6 +52,24 @@ class GetAllAppointmentsView(GenericAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class GetAppointmentByIdView(GenericAPIView):
+    serializer_class = AppointmentsSerializer
+
+    def get(self, request, id=None):
+        try:
+
+            appointment = Appointments.objects.select_related('user', 'car', 'workshops').get(id_appointment=id)
+
+            serializer = self.serializer_class(appointment)
+            if not appointment:
+                return Response({'error': 'Appointment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 #TODO: Admin Role Only
 class GetAllAppointmentsStatusView(GenericAPIView):
     serializer_class = AppointmentStatusSerializer

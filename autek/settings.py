@@ -80,6 +80,9 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 ROOT_URLCONF = 'autek.urls'
 
 TEMPLATES = [
