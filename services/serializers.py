@@ -1,11 +1,6 @@
 from rest_framework import serializers, viewsets
-
 from cars.models import Car
-from cars.serializers import CarsSerializer
-from users.models import User
-from users.serializers import UserRegisterSerializer
 from workshops.models import Workshop
-from workshops.serializers import WorkshopSerializer
 from .models import Service, AppointmentStatus, Appointments, WorkshopsService, AppointmentsServices
 
 
@@ -93,7 +88,6 @@ class AppointmentStatusPatchSerializer(serializers.ModelSerializer):
 
         return data
 
-
     class Meta:
         model = Appointments
         fields = ['appointment_status', 'appointment_status_name']
@@ -111,7 +105,6 @@ class WorkshopsServiceSerializer(serializers.ModelSerializer):
 class AppointmentsServicesSerializer(serializers.ModelSerializer):
     appointment = AppointmentsSerializer(read_only=True)
     service = WorkshopsServiceSerializer(read_only=True)
-
 
     class Meta:
         model = AppointmentsServices
