@@ -13,10 +13,15 @@ class GetAllCarsView(GenericAPIView):
     serializer_class = CarsSerializer
     permission_classes = [IsAuthenticated]
 
-    def get (self, request):
+    def get (self, request, id=None):
         try:
-            queryset = Car.objects.all()
-            serializer = self.serializer_class(queryset, many=True)
+            if id == None:
+                queryset = Car.objects.all()
+                serializer = self.serializer_class(queryset, many=True)
+            else:
+                car = get_object_or_404(Car, pk=id)
+                serializer = self.serializer_class(car)
+
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
