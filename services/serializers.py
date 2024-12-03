@@ -43,13 +43,16 @@ class AppointmentsSerializer(serializers.ModelSerializer):
             "id": obj.car.id_car,
             "brand": obj.car.brand.name,
             "model": obj.car.model.name,
-            "license_plate": obj.car.license_plate
+            "license_plate": obj.car.license_plate,
+            "year": obj.car.year
         }
 
     def get_workshops(self, obj):
         return {
             "id": obj.workshops.id_workshop,
             "name": obj.workshops.name,
+            "address": obj.workshops.address.address,
+            "city": obj.workshops.address.city.name
         }
 
     def get_appointment_status(self, obj):

@@ -41,7 +41,6 @@ class GetAllAppointmentsView(GenericAPIView):
         try:
             status_name = request.query_params.get('status')
 
-
             queryset = Appointments.objects.select_related('user', 'car', 'workshops', 'appointment_status')
 
             if status_name:
