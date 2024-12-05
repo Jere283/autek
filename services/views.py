@@ -8,6 +8,7 @@ from autek.permissions import IsAdmin
 from services.models import Appointments, AppointmentStatus
 from services.serializers import AppointmentsSerializer, AppointmentStatusSerializer, AppointmentStatusPatchSerializer
 from users.models import User
+from workshops.models import Workshop
 
 
 class CreateAppointmentView(GenericAPIView):
@@ -110,6 +111,25 @@ class GetUserAppointmentsView(GenericAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class GetWorkshoppAppointmentsView(GenericAPIView):
+    serializer_class = AppointmentsSerializer
+    permission_classes = [IsAuthenticated]
+    def get(self, request, workshop_id=None ):
+        try:
+            if workshop_id != None:
+                workshop = get_object_or_404(Workshop, pk=workshop_id)
+                queryset = Appointments.objects.select_related(
+                    'user',
+                    'car',
+                    'workshops'
+                ).filter(workshops=workshop)
+
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AppointmentStatusUpdateView(GenericAPIView):
