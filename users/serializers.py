@@ -1,8 +1,16 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from users.models import User
+from users.models import User, Roles
+
+
+class RoleSerializer (serializers.ModelSerializer):
+    class Meta:
+        model = Roles
+        fields = ('id_role', 'name')
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -45,10 +53,11 @@ class LoginSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(max_length=255, read_only=True)
     access_token = serializers.CharField(max_length=255, read_only=True)
     refresh_token = serializers.CharField(max_length=255, read_only=True)
+    role = serializers.CharField(max_length=80, read_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'id', 'password', 'full_name', 'access_token', 'refresh_token']
+        fields = ['email', 'id', 'password', 'full_name', 'access_token', 'refresh_token', 'role']
 
     def validate(self, attrs):
         email = attrs.get('email')
@@ -59,9 +68,33 @@ class LoginSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed("Las credenciales son invalidas")
         user_tokens = user.tokens()
 
+        print()
+
         return {
             'email': user.email,
             'full_name': user.get_full_name,
             'access_token': str(user_tokens.get('access')),
-            'refresh_token': str(user_tokens.get('refresh'))
+            'refresh_token': str(user_tokens.get('refresh')),
+            'role': user.role.name
         }
+
+class LogoutUserSerializer(serializers.Serializer):
+    refresh_token=serializers.CharField()
+
+    default_error_message = {
+        'bad_token': ('Token is expired or invalid')
+    }
+
+    def validate(self, attrs):
+        self.token = attrs.get('refresh_token')
+
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            token=RefreshToken(self.token)
+            token.blacklist()
+        except TokenError:
+            return self.fail('bad_token')
+
+
