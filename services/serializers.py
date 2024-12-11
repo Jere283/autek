@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from rest_framework import serializers, viewsets
 from cars.models import Car
 from workshops.models import Workshop
@@ -25,6 +27,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
     car = serializers.SerializerMethodField(read_only=True)
     workshops = serializers.SerializerMethodField(read_only=True)
     appointment_status = serializers.SerializerMethodField(read_only=True)
+
 
     class Meta:
         model = Appointments
@@ -148,6 +151,7 @@ class AppointmentsImagesSerializer(serializers.ModelSerializer):
         id_appointment = validated_data.get('id_appointment')
         url = validated_data.get('url')
         description = validated_data.get('description', None)
+        created_at = datetime.now()
 
 
         if not id_appointment:
@@ -156,6 +160,69 @@ class AppointmentsImagesSerializer(serializers.ModelSerializer):
         return AppointmentsImages.objects.create(
             id_appointment=id_appointment,
             url=url,
-            description=description
+            description=description,
+            created_at=created_at
         )
 
+
+
+class AppointmentsSerializerID(serializers.ModelSerializer):
+    id_car = serializers.PrimaryKeyRelatedField(queryset=Car.objects.all(), write_only=True)
+    id_workshop = serializers.PrimaryKeyRelatedField(queryset=Workshop.objects.all(), write_only=True)
+
+    user = serializers.SerializerMethodField(read_only=True)
+    car = serializers.SerializerMethodField(read_only=True)
+    workshops = serializers.SerializerMethodField(read_only=True)
+    appointment_status = serializers.SerializerMethodField(read_only=True)
+    images = AppointmentsImagesSerializer(many=True, read_only=True,source='appointmentsimages_set')
+
+
+    class Meta:
+        model = Appointments
+        fields = ['id_appointment', 'user', 'car', 'workshops', 'id_car', 'id_workshop',
+                  'description', 'date', 'appointment_status', 'images']
+
+    def get_user(self, obj):
+        return {
+            "id": obj.user.id,
+            "first_name": obj.user.first_name,
+            "email": obj.user.email
+        }
+
+    def get_car(self, obj):
+        return {
+            "id": obj.car.id_car,
+            "brand": obj.car.brand.name,
+            "model": obj.car.model.name,
+            "license_plate": obj.car.license_plate,
+            "year": obj.car.year
+        }
+
+    def get_workshops(self, obj):
+        return {
+            "id": obj.workshops.id_workshop,
+            "name": obj.workshops.name,
+            "address": obj.workshops.address.address,
+            "city": obj.workshops.address.city.name
+        }
+
+    def get_appointment_status(self, obj):
+        if obj.appointment_status:
+            return {
+                "id": obj.appointment_status.id_appointment_status,
+                "name": obj.appointment_status.name
+            }
+        return None
+
+    def create(self, validated_data):
+        solicitud_enviada_status = AppointmentStatus.objects.get(name="Solicitud enviada")
+        user = self.context['request'].user
+        appointment = Appointments.objects.create(
+            user=user,
+            car=validated_data["id_car"],
+            workshops=validated_data["id_workshop"],
+            description=validated_data["description"],
+            appointment_status=solicitud_enviada_status,
+            date=validated_data["date"],
+        )
+        return appointment
