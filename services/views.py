@@ -7,7 +7,8 @@ from rest_framework.response import Response
 from autek.permissions import IsAdmin
 from services.models import Appointments, AppointmentStatus, Service, WorkshopsService
 from services.serializers import AppointmentsSerializer, AppointmentStatusSerializer, AppointmentStatusPatchSerializer, \
-    ServiceSerializer, WorkshopsServiceSerializer, AppointmentsImagesSerializer, AppointmentsSerializerID
+    ServiceSerializer, WorkshopsServiceSerializer, AppointmentsImagesSerializer
+
 from users.models import User
 from workshops.models import Workshop
 
@@ -56,7 +57,7 @@ class GetAllAppointmentsView(GenericAPIView):
 
 
 class GetAppointmentByIdView(GenericAPIView):
-    serializer_class = AppointmentsSerializerID
+    serializer_class = AppointmentsSerializer
 
     def get(self, request, id=None):
         try:
@@ -64,6 +65,24 @@ class GetAppointmentByIdView(GenericAPIView):
             appointment = Appointments.objects.select_related('user', 'car', 'workshops').prefetch_related('appointmentsimages_set').get(id_appointment=id)
 
             serializer = self.serializer_class(appointment)
+            if not appointment:
+                return Response({'error': 'Appointment not found'}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetAppointmentByCarIdView(GenericAPIView):
+    serializer_class = AppointmentsSerializer
+
+    def get(self, request, id=None):
+        try:
+
+            appointment = Appointments.objects.select_related('user', 'car', 'workshops').prefetch_related('appointmentsimages_set').filter(car=id)
+
+            serializer = self.serializer_class(appointment, many=True)
             if not appointment:
                 return Response({'error': 'Appointment not found'}, status=status.HTTP_404_NOT_FOUND)
 
