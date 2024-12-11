@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from autek.permissions import IsAdmin
 from services.models import Appointments, AppointmentStatus, Service, WorkshopsService
 from services.serializers import AppointmentsSerializer, AppointmentStatusSerializer, AppointmentStatusPatchSerializer, \
-    ServiceSerializer, WorkshopsServiceSerializer
+    ServiceSerializer, WorkshopsServiceSerializer, AppointmentsImagesSerializer
 from users.models import User
 from workshops.models import Workshop
 
@@ -174,3 +174,33 @@ class WorkshopServiceView(GenericAPIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CreateAppointmentsImagesView(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AppointmentsImagesSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(
+            data=request.data,
+            context={'request': request}
+        )
+        try:
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+                return Response(
+                    data={
+                        "data": serializer.data,
+                        "message": "The appointment image has saved."
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+            return Response(
+                data={"error": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

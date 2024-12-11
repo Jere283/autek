@@ -1,7 +1,7 @@
 from rest_framework import serializers, viewsets
 from cars.models import Car
 from workshops.models import Workshop
-from .models import Service, AppointmentStatus, Appointments, WorkshopsService, AppointmentsServices
+from .models import Service, AppointmentStatus, Appointments, WorkshopsService, AppointmentsServices, AppointmentsImages
 
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -130,4 +130,32 @@ class WorkshopsServiceSerializer(serializers.ModelSerializer):
         )
         return workshop_service
 
+
+
+class AppointmentsImagesSerializer(serializers.ModelSerializer):
+    id_appointment = serializers.PrimaryKeyRelatedField(
+        queryset=Appointments.objects.all(),
+        required=True,
+        help_text="The ID of the related appointment."
+    )
+
+    class Meta:
+        model = AppointmentsImages
+        fields = ['id_image', 'id_appointment', 'url', 'description', 'created_at']
+        read_only_fields = ['id_image', 'created_at']
+
+    def create(self, validated_data):
+        id_appointment = validated_data.get('id_appointment')
+        url = validated_data.get('url')
+        description = validated_data.get('description', None)
+
+
+        if not id_appointment:
+            raise serializers.ValidationError({"id_appointment": "Appointment ID is required."})
+
+        return AppointmentsImages.objects.create(
+            id_appointment=id_appointment,
+            url=url,
+            description=description
+        )
 

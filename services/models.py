@@ -37,7 +37,16 @@ class Appointments(models.Model):
         managed = False
         db_table = 'appointments'
 
+class AppointmentsImages(models.Model):
+    id_image = models.AutoField(primary_key=True)
+    id_appointment = models.ForeignKey(Appointments, models.DO_NOTHING, db_column='id_appointment')
+    url = models.CharField(max_length=200)
+    description = models.CharField(max_length=200, blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
 
+    class Meta:
+        managed = False
+        db_table = 'appointments_images'
 
 
 class WorkshopsService(models.Model):
