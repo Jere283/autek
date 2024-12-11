@@ -97,18 +97,37 @@ class AppointmentStatusPatchSerializer(serializers.ModelSerializer):
 
 
 class WorkshopsServiceSerializer(serializers.ModelSerializer):
-    workshop = serializers.StringRelatedField()
-    service = ServiceSerializer(read_only=True)
+    workshop_id = serializers.PrimaryKeyRelatedField(queryset=Workshop.objects.all(), write_only=True)
+    service_id = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all(), write_only=True)
+
+    workshop = serializers.SerializerMethodField(read_only=True)
+    service = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = WorkshopsService
-        fields = ['id_workshop_service', 'workshop', 'service', 'price']
+        fields = ['id_workshop_service', 'workshop', 'workshop_id', 'service','service_id', 'price']
+
+    def get_workshop(self, obj):
+        return {
+            "id": obj.workshop.id_workshop,
+            "name": obj.workshop.name,
+            "address": obj.workshop.address.address,
+            "city": obj.workshop.address.city.name
+        }
+
+    def get_service(self, obj):
+        return {
+            "id": obj.service.id_service,
+            "name": obj.service.name,
+            "description": obj.service.description
+        }
+
+    def create(self, validated_data):
+        workshop_service = WorkshopsService.objects.create(
+            workshop= validated_data['workshop_id'],
+            service= validated_data['service_id'],
+            price=validated_data['price']
+        )
+        return workshop_service
 
 
-class AppointmentsServicesSerializer(serializers.ModelSerializer):
-    appointment = AppointmentsSerializer(read_only=True)
-    service = WorkshopsServiceSerializer(read_only=True)
-
-    class Meta:
-        model = AppointmentsServices
-        fields = ['id_appointment_service', 'appointment', 'service']

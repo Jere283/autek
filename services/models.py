@@ -38,6 +38,8 @@ class Appointments(models.Model):
         db_table = 'appointments'
 
 
+
+
 class WorkshopsService(models.Model):
     id_workshop_service = models.AutoField(primary_key=True)
     workshop = models.ForeignKey(Workshop, models.DO_NOTHING)
@@ -49,6 +51,7 @@ class WorkshopsService(models.Model):
         db_table = 'workshops_services'
 
 
+
 class AppointmentsServices(models.Model):
     id_appointment_service = models.AutoField(primary_key=True)
     appointment = models.ForeignKey(Appointments, models.DO_NOTHING)
@@ -57,3 +60,4 @@ class AppointmentsServices(models.Model):
     class Meta:
         managed = False
         db_table = 'appointments_services'
+

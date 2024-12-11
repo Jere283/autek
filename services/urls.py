@@ -1,7 +1,8 @@
 from django.urls import path
 
 from services.views import CreateAppointmentView, GetAllAppointmentsView, GetUserAppointmentsView, \
-    GetAllAppointmentsStatusView, AppointmentStatusUpdateView, GetAppointmentByIdView, GetWorkshoppAppointmentsView
+    GetAllAppointmentsStatusView, AppointmentStatusUpdateView, GetAppointmentByIdView, GetWorkshoppAppointmentsView, \
+    GetAllServicesView, WorkshopServiceView
 
 urlpatterns = [
     path('appointment/show/all/', GetAllAppointmentsView.as_view(), name = 'get-all-appointments'),
@@ -14,5 +15,6 @@ urlpatterns = [
 
     path('appointment/<str:appointment_id>/status/update/', AppointmentStatusUpdateView.as_view(), name='update-appointment-status'),
 
-
+    path('show/all/', GetAllServicesView.as_view(), name='get-all-services'),
+    path('workshop/show/all/', WorkshopServiceView.as_view(), name='get-all-services-from-workshops'),
     ]

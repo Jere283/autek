@@ -5,8 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from autek.permissions import IsAdmin
-from services.models import Appointments, AppointmentStatus
-from services.serializers import AppointmentsSerializer, AppointmentStatusSerializer, AppointmentStatusPatchSerializer
+from services.models import Appointments, AppointmentStatus, Service, WorkshopsService
+from services.serializers import AppointmentsSerializer, AppointmentStatusSerializer, AppointmentStatusPatchSerializer, \
+    ServiceSerializer, WorkshopsServiceSerializer
 from users.models import User
 from workshops.models import Workshop
 
@@ -146,3 +147,30 @@ class AppointmentStatusUpdateView(GenericAPIView):
             serializer.save()
             return Response({"message": "Appointment status updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class GetAllServicesView(GenericAPIView):
+    serializer_class = ServiceSerializer
+    def get(self, request):
+        try:
+            queryset = Service.objects.all()
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class WorkshopServiceView(GenericAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = WorkshopsServiceSerializer
+
+    def get(self, request):
+        try:
+            queryset = WorkshopsService.objects.all()
+            serializer = self.serializer_class(queryset, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
