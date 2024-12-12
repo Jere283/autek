@@ -109,6 +109,7 @@ class AppointmentsSerializer(serializers.ModelSerializer):
             description=validated_data["description"],
             appointment_status=solicitud_enviada_status,
             date=validated_data["date"],
+            approved_budget=0
         )
         return appointment
 
