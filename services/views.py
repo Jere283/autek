@@ -293,11 +293,12 @@ class BudgetStatusUpdateView(GenericAPIView):
     def patch(self, request, id):
         try:
             budget = Budgets.objects.get(pk=id)
+
         except Budgets.DoesNotExist:
             return Response({"error": "Budget not found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = BudgetStatusPatchSerializer(budget, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "Appointment status updated successfully", "data": serializer.data}, status=status.HTTP_200_OK)
+            return Response({"message": "Appointment status updated successfully"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
