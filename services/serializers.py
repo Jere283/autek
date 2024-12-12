@@ -177,7 +177,7 @@ class BudgetSerializer(serializers.ModelSerializer):
         required=True,
         help_text="The ID of the related appointment."
     )
-    status= BudgetsStatusSerializer()
+    status = BudgetsStatusSerializer(read_only=True)
 
     class Meta:
         model = Budgets
@@ -187,6 +187,7 @@ class BudgetSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         solicitud_enviada_status = BudgetsStatus.objects.get(name="Nuevo Prespuesto")
+        print(solicitud_enviada_status)
         budget = Budgets.objects.create(
             description=validated_data["description"],
             id_appointment=validated_data["id_appointment"],

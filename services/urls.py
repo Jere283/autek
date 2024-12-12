@@ -3,7 +3,7 @@ from django.urls import path
 from services.views import CreateAppointmentView, GetAllAppointmentsView, GetUserAppointmentsView, \
     GetAllAppointmentsStatusView, AppointmentStatusUpdateView, GetAppointmentByIdView, GetWorkshoppAppointmentsView, \
     GetAllServicesView, WorkshopServiceView, CreateAppointmentsImagesView, GetAppointmentByCarIdView, CreateBudgetView, \
-    GetBusgetsByAppointmentId, GetBusgetsStatuses, BudgetStatusUpdateView
+     GetBusgetsStatuses, BudgetStatusUpdateView, GetBudgetsByAppointmentId
 
 urlpatterns = [
     path('appointment/show/all/', GetAllAppointmentsView.as_view(), name = 'get-all-appointments'),
@@ -25,7 +25,7 @@ urlpatterns = [
 
     # Budget
     path('appointment/budget/new/', CreateBudgetView.as_view(), name = 'create-budget'),
-    path('appointment/<int:id>/budget/show/', GetBusgetsByAppointmentId.as_view(), name = 'get-budgets-id'),
+    path('appointment/<int:id>/budget/show/', GetBudgetsByAppointmentId.as_view(), name = 'get-budgets-id'),
     path('budget/status/show/', GetBusgetsStatuses.as_view(), name = 'get-budgets-status'),
     path('budget/<int:id>/status/update/', BudgetStatusUpdateView.as_view(),name='update-budget-status'),
 

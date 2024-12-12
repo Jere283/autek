@@ -256,7 +256,7 @@ class CreateBudgetView(GenericAPIView):
             )
 
 
-class GetBusgetsByAppointmentId(GenericAPIView):
+class GetBudgetsByAppointmentId(GenericAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BudgetSerializer
     def get(self, request, id=None ):
