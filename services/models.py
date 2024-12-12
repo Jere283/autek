@@ -32,6 +32,7 @@ class Appointments(models.Model):
     description = models.TextField(blank=True, null=True)
     date = models.DateTimeField()
     appointment_status = models.ForeignKey(AppointmentStatus, models.DO_NOTHING, db_column='appointment_status', blank=True, null=True)
+    approved_budget = models.DecimalField(max_digits=14, decimal_places=2, null=False)
 
     class Meta:
         managed = False

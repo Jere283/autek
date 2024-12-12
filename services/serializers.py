@@ -64,7 +64,8 @@ class AppointmentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointments
         fields = ['id_appointment', 'user', 'car', 'workshops', 'id_car', 'id_workshop',
-                  'description', 'date', 'appointment_status', 'images']
+                  'description', 'date', 'appointment_status', 'images', 'approved_budget']
+        read_only_fields =['approved_budget', 'appointment_status']
 
     def get_user(self, obj):
         return {
