@@ -205,7 +205,7 @@ class BudgetStatusPatchSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         current_status = self.instance.status
-        new_status = data.get('budget_status')
+        new_status = data.get('status')
 
         if current_status == new_status:
             raise serializers.ValidationError("The new status must be different from the current status.")
