@@ -187,7 +187,6 @@ class BudgetSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         solicitud_enviada_status = BudgetsStatus.objects.get(name="Nuevo Prespuesto")
-        print(solicitud_enviada_status)
         budget = Budgets.objects.create(
             description=validated_data["description"],
             id_appointment=validated_data["id_appointment"],
