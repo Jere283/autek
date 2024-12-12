@@ -3,7 +3,8 @@ from datetime import datetime
 from rest_framework import serializers, viewsets
 from cars.models import Car
 from workshops.models import Workshop
-from .models import Service, AppointmentStatus, Appointments, WorkshopsService, AppointmentsServices, AppointmentsImages
+from .models import Service, AppointmentStatus, Appointments, WorkshopsService, AppointmentsServices, \
+    AppointmentsImages, Budgets, BudgetsStatus
 
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -165,4 +166,51 @@ class WorkshopsServiceSerializer(serializers.ModelSerializer):
         return workshop_service
 
 
+class BudgetsStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BudgetsStatus
+        fields = ['id_budget_status', 'name']
 
+class BudgetSerializer(serializers.ModelSerializer):
+    id_appointment = serializers.PrimaryKeyRelatedField(
+        queryset=Appointments.objects.all(),
+        required=True,
+        help_text="The ID of the related appointment."
+    )
+    status= BudgetsStatusSerializer()
+
+    class Meta:
+        model = Budgets
+        fields = ['id_budget','description', 'id_appointment', 'status' ,'created_at', 'amount']
+        read_only_fields = ['id_budget', 'created_at', 'status']
+
+
+    def create(self, validated_data):
+        solicitud_enviada_status = BudgetsStatus.objects.get(name="Nuevo Prespuesto")
+        budget = Budgets.objects.create(
+            description=validated_data["description"],
+            id_appointment=validated_data["id_appointment"],
+            created_at=datetime.now(),
+            status = solicitud_enviada_status,
+            amount=validated_data['amount']
+        )
+        return budget
+
+
+class BudgetStatusPatchSerializer(serializers.ModelSerializer):
+
+    status = serializers.PrimaryKeyRelatedField(queryset=BudgetsStatus.objects.all(), write_only=True)
+    budget_status_name = serializers.CharField(source='budget_status.name', read_only=True)
+
+    def validate(self, data):
+        current_status = self.instance.status
+        new_status = data.get('budget_status')
+
+        if current_status == new_status:
+            raise serializers.ValidationError("The new status must be different from the current status.")
+
+        return data
+
+    class Meta:
+        model = Budgets
+        fields = [ 'budget_status_name', 'status']

@@ -70,3 +70,24 @@ class AppointmentsServices(models.Model):
         managed = False
         db_table = 'appointments_services'
 
+
+class BudgetsStatus(models.Model):
+    id_budget_status = models.AutoField(primary_key=True)
+    name = models.CharField(unique=True, max_length=60)
+
+    class Meta:
+        managed = False
+        db_table = 'budgets_status'
+
+
+class Budgets(models.Model):
+    id_budget = models.AutoField(primary_key=True)
+    description = models.CharField(max_length=200)
+    id_appointment = models.ForeignKey(Appointments, models.DO_NOTHING, db_column='appointment_id')
+    status = models.ForeignKey(BudgetsStatus, models.DO_NOTHING, blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    amount = models.DecimalField(max_digits=14, decimal_places=2, null=False)
+
+    class Meta:
+        managed = False
+        db_table = 'budgets'
